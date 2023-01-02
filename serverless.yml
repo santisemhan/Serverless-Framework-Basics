@@ -1,0 +1,27 @@
+service: serverless-basics
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: sa-east-1
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: serverless-bucket-ssemhan
+      localDir: upload-data
+
+functions:
+  hello:
+    handler: handler.hello
+
+resources:
+  Resources:
+    DemoBucketUpload:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: serverless-bucket-ssemhan
