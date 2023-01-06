@@ -15,16 +15,21 @@ plugins:
 custom:
   s3Sync:
     - bucketName: serverless-bucket-ssemhan
-      localDir: src\main\_mock\upload-data\upload-me.txt
+      localDir: src\main\_mock\upload-data
 
 functions:
   getUser:
     handler: src\main\lambdas\getUser.handler
     events:
         - http:
-            path: get-user/{ID}
+            path: get-user/{id}
             method: GET
             cors: true
+            request:
+              parameters:
+                paths:
+                  id: true
+                  
 
 resources:
   Resources:

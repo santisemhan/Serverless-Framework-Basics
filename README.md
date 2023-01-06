@@ -81,12 +81,16 @@ the http endpoint.
 ```bash
 functions:
   getUser:
-    handler: lambdas/getUser.handler
+    handler: src\main\lambdas\getUser.handler
     events:
         - http:
-            path: get-user/{ID}
+            path: get-user/{id}
             method: GET
             cors: true
+            request:
+              parameters:
+                paths:
+                  id: true
 ```
 
 
