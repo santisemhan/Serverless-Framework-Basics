@@ -19,7 +19,7 @@ custom:
 
 functions:
   getUser:
-    handler: lambdas/getUser.handler
+    handler: src\main\lambdas\getUser.handler
     events:
         - http:
             path: get-user/{ID}
