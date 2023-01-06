@@ -2,6 +2,8 @@ service: serverless-basics
 
 frameworkVersion: '3'
 
+configValidationMode: error
+
 provider:
   name: aws
   runtime: nodejs18.x
@@ -13,11 +15,16 @@ plugins:
 custom:
   s3Sync:
     - bucketName: serverless-bucket-ssemhan
-      localDir: upload-data
+      localDir: src\main\_mock\upload-data\upload-me.txt
 
 functions:
-  hello:
-    handler: handler.hello
+  getUser:
+    handler: lambdas/getUser.handler
+    events:
+        - http:
+            path: get-user/{ID}
+            method: GET
+            cors: true
 
 resources:
   Resources:

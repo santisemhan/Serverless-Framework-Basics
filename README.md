@@ -16,13 +16,86 @@ Create an app with a NodeJS template
 ```bash
   serverless create --template aws-nodejs --path myServerlessProyect
 ```
+## Create an API
+Package for a StatusCode enums
+
+```bash
+npm install http-status-codes --save
+```
+
+We create a response model
+
+```bash
+const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Methods': '*',
+    'Access-Control-Allow-Origin': '*'
+}
+
+const Response = {
+    _success(data = {statusCode: StatusCodes.NO_CONTENT, content: {}}){
+        return {
+            headers: headers,
+            statusCode: data.statusCode,
+            body: JSON.stringify(data.content)
+        }
+    },
+    _error(data = {statusCode: StatusCodes.INTERNAL_SERVER_ERROR, content: {}}){
+        return {
+            headers: headers,
+            statusCode: data.statusCode,
+            body: JSON.stringify(data.content)
+        }
+    }
+}
+
+module.exports = Response;
+```
+And make the handler for the lambda. In this case we are going to make a handler to get a user.
+
+```bash
+const Responses = require('./HTTP/Response');
+const StatusCodes = require('./HTTP/StatusCode');
+
+const users = require('../_mock/users')
+
+exports.handler = async event => {
+    console.log('event', event);
+
+    if(!event.pathParameters || !event.pathParameters.ID){
+        Responses._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
+    }
+
+    let user = users[event.pathParameters.ID];
+    if(user){
+        return Responses._success({statusCode: StatusCodes.BAD_REQUEST, content: user });
+    }
+
+    Responses._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
+}
+```
+
+We asociate the handler with the lambda in the *serverless.yml* and we will configure
+the http endpoint.
+
+```bash
+functions:
+  getUser:
+    handler: lambdas/getUser.handler
+    events:
+        - http:
+            path: get-user/{ID}
+            method: GET
+            cors: true
+```
+
 
 ## Upload to S3 Bucket
 
 To upload local data to S3 Bucket in AWS
 
 ```bash
-  npm i --save serverless-s3-sync
+  npm install --save serverless-s3-sync
 ```
 
 In the serverless.yml
@@ -62,4 +135,4 @@ Cannot read file node_modules\bluebird\js\release\context.js due to: EMFILE: too
    gracefulFs.gracefulify(realFs)
    const fs = BbPromise.promisifyAll(realFs);
 ```
-[Reference]("https://github.com/serverless/serverless/issues/10944")
+Reference: "https://github.com/serverless/serverless/issues/10944"
