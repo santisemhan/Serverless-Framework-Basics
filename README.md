@@ -17,7 +17,7 @@ Create an app with a NodeJS template
   serverless create --template aws-nodejs --path myServerlessProyect
 ```
 ## Create an API
-Package for a StatusCode enums
+Package for a StatusCode enum
 
 ```bash
 npm install http-status-codes --save

@@ -17,5 +17,5 @@ exports.handler = async event => {
         return Responses._success({statusCode: StatusCodes.OK, content: user });
     }
 
-    Responses._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
+    Responses._error({statusCode: StatusCodes.NOT_FOUND, content: { message: 'user not found' }});
 }
