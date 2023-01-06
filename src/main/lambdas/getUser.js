@@ -9,7 +9,7 @@ exports.handler = async event => {
     console.log('event', event);
 
     if(!event.pathParameters || !event.pathParameters.ID){
-        Responses._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
+        return Responses._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
     }
 
     let user = users[event.pathParameters.ID];
@@ -17,5 +17,5 @@ exports.handler = async event => {
         return Responses._success({statusCode: StatusCodes.OK, content: user });
     }
 
-    Responses._error({statusCode: StatusCodes.NOT_FOUND, content: { message: 'user not found' }});
+    return Responses._error({statusCode: StatusCodes.NOT_FOUND, content: { message: 'user not found' }});
 }
