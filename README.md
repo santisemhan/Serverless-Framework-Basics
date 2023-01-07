@@ -51,7 +51,7 @@ export const Response = {
 
 module.exports = Response;
 ```
-And make the handler for the lambda. In this case we are going to make a handler to get a user.
+And make the handler for the lambda. In this case we are going to make a handler to get a user
 
 ```bash
 import { users } from '../../../../_mock/users.js'
@@ -76,17 +76,16 @@ export const handler = async (event) => {
 ```
 
 We asociate the handler with the lambda in the *serverless.yml* and we will configure
-the http endpoint.
+the http endpoint
 
 ```bash
 functions:
   getUser:
-    handler: src\main\lambdas\HTTP\handlers\users\getUser.handler
+    handler: src/main/lambdas/HTTP/handlers/users/getUser.handler
     events:
         - http:
-            path: get-user/{id}
+            path: /get-user/{id}
             method: GET
-            cors: true
             request:
               parameters:
                 paths:

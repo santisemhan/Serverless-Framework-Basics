@@ -9,29 +9,30 @@ provider:
   runtime: nodejs18.x
   region: sa-east-1
 
-plugins:
-  - serverless-s3-sync
-  - serverless-offline
+# Comment to avoid spending the free trial.
+# This deploy a S3 Bucket and upload local data
+# plugins:
+  # - serverless-s3-sync
+# custom:
+  # s3Sync:
+  #   - bucketName: serverless-bucket-ssemhan
+  #     localDir: src\main\_mock\upload-data
 
-custom:
-  s3Sync:
-    - bucketName: serverless-bucket-ssemhan
-      localDir: src\main\_mock\upload-data
+plugins:
+  - serverless-offline
 
 functions:
   getUser:
-    handler: src\main\lambdas\HTTP\handlers\users\getUser.handler
+    handler: src/main/lambdas/HTTP/handlers/users/getUser.handler
     events:
         - http:
-            path: get-user/{id}
+            path: /get-user/{id}
             method: GET
-            cors: true
             request:
               parameters:
                 paths:
                   id: true
                   
-
 resources:
   Resources:
     DemoBucketUpload:
