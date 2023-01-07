@@ -26,52 +26,55 @@ npm install http-status-codes --save
 We create a response model
 
 ```bash
+import { StatusCodes } from 'http-status-codes'
+
 const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Methods': '*',
-    'Access-Control-Allow-Origin': '*'
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Methods': '*',
+  'Access-Control-Allow-Origin': '*'
 }
 
 export const Response = {
-    _success(data = {statusCode: StatusCodes.NO_CONTENT, content: {}}){
-        return {
-            headers: headers,
-            statusCode: data.statusCode,
-            body: JSON.stringify(data.content, null, 2)
-        }
-    },
-    _error(data = {statusCode: StatusCodes.INTERNAL_SERVER_ERROR, content: {}}){
-        return {
-            headers: headers,
-            statusCode: data.statusCode,
-            body: JSON.stringify(data.content, null, 2)
-        }
+  _success (data = { statusCode: StatusCodes.NO_CONTENT, content: {} }) {
+    return {
+      headers,
+      statusCode: data.statusCode,
+      body: JSON.stringify(data.content, null, 2)
     }
+  },
+  _error (data = { statusCode: StatusCodes.INTERNAL_SERVER_ERROR, content: {} }) {
+    return {
+      headers,
+      statusCode: data.statusCode,
+      body: JSON.stringify(data.content, null, 2)
+    }
+  }
 }
-
-module.exports = Response;
 ```
 And make the handler for the lambda. In this case we are going to make a handler to get a user
 
 ```bash
 import { users } from '../../../../_mock/users.js'
-import { StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes'
 import { Response } from '../../support/Response.js'
 
-
 export const handler = async (event) => {
-    console.log('event', event);
+  if (!event.pathParameters || !event.pathParameters.id) {
+    return Response._error({
+      statusCode: StatusCodes.BAD_REQUEST,
+      content: { message: 'missing the ID from the path' }
+    })
+  }
 
-    if(!event.pathParameters || !event.pathParameters.id){
-        return Response._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
-    }
+  const user = users[event.pathParameters.id]
+  if (user) {
+    return Response._success({ statusCode: StatusCodes.OK, content: user })
+  }
 
-    let user = users[event.pathParameters.id];
-    if(user){
-        return Response._success({statusCode: StatusCodes.OK, content: user });
-    }
-
-    return Response._error({statusCode: StatusCodes.NOT_FOUND, content: { message: 'user not found' }});
+  return Response._error({
+    statusCode: StatusCodes.NOT_FOUND,
+    content: { message: 'user not found' }
+  })
 }
 ```
 
