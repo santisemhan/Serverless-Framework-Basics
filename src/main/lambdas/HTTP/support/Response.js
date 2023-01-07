@@ -1,6 +1,4 @@
-'use strict';
-
-const StatusCodes = require('./StatusCode');
+import { StatusCodes } from 'http-status-codes'
 
 const headers = {
     'Content-Type': 'application/json',
@@ -8,21 +6,19 @@ const headers = {
     'Access-Control-Allow-Origin': '*'
 }
 
-const Response = {
+export const Response = {
     _success(data = {statusCode: StatusCodes.NO_CONTENT, content: {}}){
         return {
             headers: headers,
             statusCode: data.statusCode,
-            body: JSON.stringify(data.content)
+            body: JSON.stringify(data.content, null, 2)
         }
     },
     _error(data = {statusCode: StatusCodes.INTERNAL_SERVER_ERROR, content: {}}){
         return {
             headers: headers,
             statusCode: data.statusCode,
-            body: JSON.stringify(data.content)
+            body: JSON.stringify(data.content, null, 2)
         }
     }
 }
-
-module.exports = Response;

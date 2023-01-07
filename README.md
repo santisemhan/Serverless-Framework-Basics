@@ -32,19 +32,19 @@ const headers = {
     'Access-Control-Allow-Origin': '*'
 }
 
-const Response = {
+export const Response = {
     _success(data = {statusCode: StatusCodes.NO_CONTENT, content: {}}){
         return {
             headers: headers,
             statusCode: data.statusCode,
-            body: JSON.stringify(data.content)
+            body: JSON.stringify(data.content, null, 2)
         }
     },
     _error(data = {statusCode: StatusCodes.INTERNAL_SERVER_ERROR, content: {}}){
         return {
             headers: headers,
             statusCode: data.statusCode,
-            body: JSON.stringify(data.content)
+            body: JSON.stringify(data.content, null, 2)
         }
     }
 }
@@ -54,24 +54,24 @@ module.exports = Response;
 And make the handler for the lambda. In this case we are going to make a handler to get a user.
 
 ```bash
-const Responses = require('./HTTP/Response');
-const StatusCodes = require('./HTTP/StatusCode');
+import { users } from '../../../../_mock/users.js'
+import { StatusCodes } from 'http-status-codes';
+import { Response } from '../../support/Response.js'
 
-const users = require('../_mock/users')
 
-exports.handler = async event => {
+export const handler = async (event) => {
     console.log('event', event);
 
-    if(!event.pathParameters || !event.pathParameters.ID){
-        Responses._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
+    if(!event.pathParameters || !event.pathParameters.id){
+        return Response._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
     }
 
-    let user = users[event.pathParameters.ID];
+    let user = users[event.pathParameters.id];
     if(user){
-        return Responses._success({statusCode: StatusCodes.BAD_REQUEST, content: user });
+        return Response._success({statusCode: StatusCodes.OK, content: user });
     }
 
-    Responses._error({statusCode: StatusCodes.BAD_REQUEST, content: { message: 'missing the ID from the path' }});
+    return Response._error({statusCode: StatusCodes.NOT_FOUND, content: { message: 'user not found' }});
 }
 ```
 
@@ -81,7 +81,7 @@ the http endpoint.
 ```bash
 functions:
   getUser:
-    handler: src\main\lambdas\getUser.handler
+    handler: src\main\lambdas\HTTP\handlers\users\getUser.handler
     events:
         - http:
             path: get-user/{id}
