@@ -5,11 +5,16 @@
   "type": "module",
   "dependencies": {
     "graceful-fs": "4.2.10",
-    "http-status-codes": "^2.2.0",
+    "http-status-codes": "2.2.0",
     "serverless": "3.26.0",
     "serverless-s3-sync": "3.1.0"
   },
   "devDependencies": {
-    "serverless-offline": "^12.0.4"
+    "prettier": "^2.8.1",
+    "serverless-offline": "12.0.4",
+    "standard": "17.0.0"
+  },
+  "eslintConfig": {
+    "extends": "standard"
   }
 }
