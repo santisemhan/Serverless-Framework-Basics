@@ -1,10 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-
-const headers = {
-  'Content-Type': 'application/json',
-  'Access-Control-Allow-Methods': '*',
-  'Access-Control-Allow-Origin': '*'
-}
+import { headers } from './headers.js'
 
 export const Response = {
   _success (data = { statusCode: StatusCodes.NO_CONTENT, content: {} }) {
