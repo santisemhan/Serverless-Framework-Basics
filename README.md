@@ -68,7 +68,10 @@ export const handler = async (event) => {
 
   const user = users[event.pathParameters.id]
   if (user) {
-    return Response._success({ statusCode: StatusCodes.OK, content: user })
+    return Response._success({
+      statusCode: StatusCodes.OK,
+      content: user
+    })
   }
 
   return Response._error({
@@ -89,12 +92,38 @@ functions:
         - http:
             path: /get-user/{id}
             method: GET
+            cors: true
             request:
               parameters:
                 paths:
                   id: true
 ```
 
+## Create a DynamoDB table
+
+To create a Dynamo table in serverless we must put in our *serverless.yml* resources section this:
+
+```bash
+resources:
+  Resources:
+    UserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: user
+        AttributeDefinitions:
+            - AttributeName: id
+              AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST # PROVISIONED | PAY_PER_REQUEST
+
+```
+BillingMode reference: https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BillingModeSummary.html
+
+## Integrate DynamoDB with your API
+
+In progress...
 
 ## Upload to S3 Bucket
 
@@ -141,4 +170,4 @@ Cannot read file node_modules\bluebird\js\release\context.js due to: EMFILE: too
    gracefulFs.gracefulify(realFs)
    const fs = BbPromise.promisifyAll(realFs);
 ```
-Reference: "https://github.com/serverless/serverless/issues/10944"
+Reference: https://github.com/serverless/serverless/issues/10944

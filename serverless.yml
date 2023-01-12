@@ -9,17 +9,15 @@ provider:
   runtime: nodejs18.x
   region: sa-east-1
 
-# Comment to avoid spending the free trial.
-# This deploy a S3 Bucket and upload local data
-# plugins:
-  # - serverless-s3-sync
-# custom:
-  # s3Sync:
-  #   - bucketName: serverless-bucket-ssemhan
-  #     localDir: src\main\_mock\upload-data
 
 plugins:
   - serverless-offline
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: serverless-bucket-ssemhan
+      localDir: src\main\_mock\upload-data
 
 functions:
   getUser:
@@ -28,6 +26,7 @@ functions:
         - http:
             path: /get-user/{id}
             method: GET
+            cors: true
             request:
               parameters:
                 paths:
@@ -39,3 +38,14 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: serverless-bucket-ssemhan
+    UserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: user
+        AttributeDefinitions:
+            - AttributeName: id
+              AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST # PROVISIONED | PAY_PER_REQUEST

@@ -12,7 +12,10 @@ export const handler = async (event) => {
 
   const user = users[event.pathParameters.id]
   if (user) {
-    return Response._success({ statusCode: StatusCodes.OK, content: user })
+    return Response._success({
+      statusCode: StatusCodes.OK,
+      content: user
+    })
   }
 
   return Response._error({
