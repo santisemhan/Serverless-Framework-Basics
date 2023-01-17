@@ -101,7 +101,7 @@ functions:
 
 ## Create a DynamoDB table
 
-To create a Dynamo table in serverless we must put in our *serverless.yml* resources section this:
+To create a DynamoDB table in serverless we must put in our *serverless.yml* resources section this:
 
 ```bash
 resources:
@@ -123,14 +123,60 @@ BillingMode reference: https://docs.aws.amazon.com/amazondynamodb/latest/APIRefe
 
 ## Integrate DynamoDB with your API
 
-In progress...
+To integrate DynamoDB with our API we will need the aws-sdk
+
+```bash
+npm install aws-sdk
+```
+
+### Getting data
+We will centralize the logic for the Dynamo get method
+```bash
+import AWS from 'aws-sdk'
+
+const documentClient = new AWS.DynamoDB.DocumentClient()
+
+const Dynamo = {
+  async get (id, tableName) {
+    const params = {
+      tableName,
+      key: {
+        id
+      }
+    }
+
+    const data = await documentClient
+      .get(params)
+      .promise()
+
+    if (!data || !data.Item) {
+      throw Error(`There was an error fetching the data for id of ${id} from ${tableName}`)
+    }
+
+    return data.Item
+  }
+}
+
+export default Dynamo
+```
+
+Getting data inside the lambda function
+
+```bash
+const user = await Dynamo.get(event.pathParameters.id, 'yourTableName').catch(err => {
+  console.log('error in Dynamo get', err)
+  return null
+})
+```
+
+### Adding data
 
 ## Upload to S3 Bucket
 
 To upload local data to S3 Bucket in AWS
 
 ```bash
-  npm install --save serverless-s3-sync
+npm install --save serverless-s3-sync
 ```
 
 In the serverless.yml

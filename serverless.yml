@@ -8,6 +8,13 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: sa-east-1
+  environment:
+      userTableName: ${self:custom.userTableName}
+  iamRoleStatements:
+      - Effect: Allow
+        Action:
+            - dynamodb:*
+        Resource: '*'
 
 
 plugins:
@@ -17,9 +24,21 @@ plugins:
 custom:
   s3Sync:
     - bucketName: serverless-bucket-ssemhan
-      localDir: src\main\_mock\upload-data
+      localDir: src/main/_mock/upload-data
+  userTableName: users
 
 functions:
+  getMockUser:
+    handler: src/main/lambdas/HTTP/handlers/mock-users/getUser.handler
+    events:
+        - http:
+            path: /get-mock-user/{id}
+            method: GET
+            cors: true
+            request:
+              parameters:
+                paths:
+                  id: true
   getUser:
     handler: src/main/lambdas/HTTP/handlers/users/getUser.handler
     events:
@@ -41,7 +60,7 @@ resources:
     UserTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: user
+        TableName: ${self:custom.userTableName}
         AttributeDefinitions:
             - AttributeName: id
               AttributeType: S
