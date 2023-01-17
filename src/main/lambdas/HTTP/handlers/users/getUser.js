@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import Dynamo from '../../../common/dynamo.js'
-import { Response } from '../../common/Response.js'
+import Response from '../../common/response.js'
 
 const tableName = process.env.userTableName
 
@@ -25,6 +25,7 @@ export const handler = async (event) => {
   }
 
   return Response._success({
-    statusCode: StatusCodes.OK
+    statusCode: StatusCodes.OK,
+    content: user
   })
 }

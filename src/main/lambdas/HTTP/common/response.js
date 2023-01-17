@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { headers } from './headers.js'
 
-export const Response = {
+const Response = {
   _success (data = { statusCode: StatusCodes.NO_CONTENT, content: {} }) {
     return {
       headers,
@@ -17,3 +17,5 @@ export const Response = {
     }
   }
 }
+
+export default Response

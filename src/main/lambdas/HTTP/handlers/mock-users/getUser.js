@@ -1,6 +1,6 @@
 import { users } from '../../../../_mock/users.js'
 import { StatusCodes } from 'http-status-codes'
-import { Response } from '../../common/Response.js'
+import Response from '../../common/response.js'
 
 export const handler = async (event) => {
   if (!event.pathParameters || !event.pathParameters.id) {
